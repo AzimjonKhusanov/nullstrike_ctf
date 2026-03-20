@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Edit Task — Null.CTF{% endblock %}
+{% block content %}
+<div class="flex items-center gap-2 mb-3">
+  <a href="{{ url_for('admin') }}" class="btn btn-ghost btn-sm">← Admin</a>
+  <h1 style="font-size:1.3rem;font-weight:700;">Edit Task</h1>
+  <span class="badge badge-{{ 'pending' if task.type == 'competition' else 'active' }}">{{ task.type }}</span>
+</div>
+
+<div class="card" style="max-width:640px;">
+  <div class="card-body">
+    <form method="POST">
+      <div class="form-group">
+        <label>Title</label>
+        <input type="text" name="title" value="{{ task.title }}" required>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea name="description" rows="5">{{ task.description }}</textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Flag</label>
+          <input type="text" name="flag" value="{{ task.flag }}" required>
+        </div>
+        <div class="form-group">
+          <label>Points</label>
+          <input type="number" name="points" value="{{ task.points }}" min="1">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <input type="text" name="category" value="{{ task.category }}">
+      </div>
+      <div class="form-group">
+        <label>Hints (one per line)</label>
+        <textarea name="hints" rows="3">{{ hints_str }}</textarea>
+      </div>
+      <div class="flex gap-1">
+        <button class="btn btn-primary">Save Changes</button>
+        <a href="{{ url_for('admin') }}" class="btn btn-ghost">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

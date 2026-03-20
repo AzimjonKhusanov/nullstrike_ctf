@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Practice — Null.CTF{% endblock %}
+{% block content %}
+<div class="flex items-center gap-2 mb-3">
+  <h1 style="font-size:1.4rem;font-weight:700;flex:1;">Practice Arena</h1>
+  <span class="text-muted mono" style="font-size:0.85rem;">
+    {{ tasks|selectattr('solved')|list|length }} / {{ tasks|length }} solved
+  </span>
+</div>
+
+{% if tasks %}
+  {% set categories = tasks|map(attribute='category')|unique|list %}
+  {% for cat in categories %}
+  <div class="section-title">// {{ cat }}</div>
+  {% for t in tasks if t.category == cat %}
+  <div class="card mb-2">
+    <div class="card-body flex items-center justify-between" style="flex-wrap:wrap;gap:1rem;">
+      <div>
+        <div class="flex items-center gap-1 mb-1" style="flex-wrap:wrap;">
+          <a href="{{ url_for('task', tid=t.id) }}"
+             style="font-weight:700;font-size:1.05rem;text-decoration:none;color:{% if t.solved %}var(--green){% else %}var(--text){% endif %};">
+            {{ t.title }}
+          </a>
+          {% if t.solved %}<span class="badge badge-solved">✓ Solved</span>
+          {% else %}<span class="badge badge-unsolved">Unsolved</span>{% endif %}
+        </div>
+        <span class="pts">{{ t.points }} pts</span>
+      </div>
+      <a href="{{ url_for('task', tid=t.id) }}" class="btn btn-ghost btn-sm">Open →</a>
+    </div>
+  </div>
+  {% endfor %}
+  {% endfor %}
+{% else %}
+  <div class="card">
+    <div class="card-body text-muted mono" style="text-align:center;padding:3rem;">
+      No practice tasks available yet.
+    </div>
+  </div>
+{% endif %}
+{% endblock %}

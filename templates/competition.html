@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block title %}{{ comp.name }} — Null.CTF{% endblock %}
+{% block content %}
+<div class="flex items-center gap-2 mb-3" style="flex-wrap:wrap;">
+  <a href="{{ url_for('dashboard') }}" class="btn btn-ghost btn-sm">← Back</a>
+  <h1 style="font-size:1.5rem;font-weight:700;flex:1;">{{ comp.name }}</h1>
+  <span class="badge badge-{{ comp.status }}">{{ comp.status }}</span>
+</div>
+
+{% if comp.description %}
+<div class="card mb-3">
+  <div class="card-body text-muted">{{ comp.description }}</div>
+</div>
+{% endif %}
+
+{% if comp.status == 'active' %}
+  {% if not joined %}
+  <div class="card mb-3" style="border-color:rgba(0,212,255,0.3);">
+    <div class="card-body flex items-center justify-between" style="flex-wrap:wrap;gap:1rem;">
+      <div>
+        <div style="font-weight:700;margin-bottom:0.25rem;">Ready to compete?</div>
+        <div class="text-muted" style="font-size:0.9rem;">Join to access tasks and earn points.</div>
+      </div>
+      <form method="POST" action="{{ url_for('join_competition', cid=comp.id) }}">
+        <button class="btn btn-primary">Join Competition</button>
+      </form>
+    </div>
+  </div>
+  {% else %}
+  <div class="grid-2">
+    <div>
+      <div class="section-title">// Tasks</div>
+      {% if tasks %}
+        {% for t in tasks %}
+        <div class="card mb-2">
+          <div class="card-body" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+            <div>
+              <div class="flex items-center gap-1 mb-1" style="flex-wrap:wrap;">
+                <a href="{{ url_for('task', tid=t.id) }}"
+                   style="font-weight:700;color:{% if t.solved %}var(--green){% else %}var(--text){% endif %};text-decoration:none;">
+                  {{ t.title }}
+                </a>
+                {% if t.solved %}<span class="badge badge-solved">✓ Solved</span>{% endif %}
+              </div>
+              <div class="flex gap-1">
+                <span class="badge badge-cat">{{ t.category }}</span>
+                <span class="pts">{{ t.points }} pts</span>
+              </div>
+            </div>
+            <a href="{{ url_for('task', tid=t.id) }}" class="btn btn-ghost btn-sm">Open →</a>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="card">
+          <div class="card-body text-muted mono" style="text-align:center;padding:2rem;">
+            No tasks yet.
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    <div>
+      <div class="section-title">// Scoreboard</div>
+      <div class="card">
+        {% if scoreboard %}
+        <table>
+          <thead>
+            <tr><th>#</th><th>Player</th><th>Points</th></tr>
+          </thead>
+          <tbody>
+            {% for row in scoreboard %}
+            <tr>
+              <td class="text-muted mono">{{ loop.index }}</td>
+              <td>
+                {% if loop.index == 1 %}🥇 {% elif loop.index == 2 %}🥈 {% elif loop.index == 3 %}🥉 {% endif %}
+                <strong style="{% if row.username == session.username %}color:var(--accent){% endif %}">
+                  {{ row.username }}
+                </strong>
+              </td>
+              <td class="pts">{{ row.total }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+          <div class="card-body text-muted mono" style="text-align:center;padding:2rem;">
+            No solves yet. Be first!
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+{% elif comp.status == 'pending' %}
+  <div class="card">
+    <div class="card-body text-muted mono" style="text-align:center;padding:3rem;">
+      Competition has not started yet.
+    </div>
+  </div>
+{% else %}
+  <div class="card">
+    <div class="card-body" style="text-align:center;padding:2rem;">
+      <div class="text-muted mono mb-2">Competition has ended.</div>
+      {% if scoreboard %}
+      <div class="section-title">// Final Scoreboard</div>
+      <table>
+        <thead><tr><th>#</th><th>Player</th><th>Points</th></tr></thead>
+        <tbody>
+          {% for row in scoreboard %}
+          <tr>
+            <td class="mono text-muted">{{ loop.index }}</td>
+            <td>{% if loop.index == 1 %}🥇 {% elif loop.index == 2 %}🥈 {% elif loop.index == 3 %}🥉 {% endif %}{{ row.username }}</td>
+            <td class="pts">{{ row.total }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+{% endblock %}

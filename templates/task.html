@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}{{ task.title }} — CTF.PWN{% endblock %}
+{% block content %}
+<div class="flex items-center gap-2 mb-3" style="flex-wrap:wrap;">
+  <a href="{{ back }}" class="btn btn-ghost btn-sm">← Back</a>
+  <div style="flex:1;">
+    <div class="flex items-center gap-2" style="flex-wrap:wrap;">
+      <h1 style="font-size:1.4rem;font-weight:700;">{{ task.title }}</h1>
+      {% if solved and solved.correct %}
+        <span class="badge badge-solved">✓ Solved</span>
+      {% endif %}
+      <span class="badge badge-cat">{{ task.category }}</span>
+      {% if task.type == 'practice' %}
+        <span class="badge badge-pending">Practice</span>
+      {% endif %}
+    </div>
+  </div>
+  <span class="pts" style="font-size:1.3rem;">{{ task.points }} pts</span>
+</div>
+
+<div class="grid-2" style="align-items:start;">
+  <div>
+    <div class="card mb-3">
+      <div class="card-header"><h2>// Challenge</h2></div>
+      <div class="card-body" style="white-space:pre-wrap;line-height:1.7;">{{ task.description }}</div>
+    </div>
+
+    {% if hints %}
+    <div class="card mb-3">
+      <div class="card-header"><h2>// Hints</h2></div>
+      <div class="card-body">
+        {% for i, hint in enumerate(hints) if hints %}
+        {% endfor %}
+        {% for hint in hints %}
+        <div style="padding:0.6rem 0;{% if not loop.last %}border-bottom:1px solid var(--border);{% endif %}">
+          <span class="text-orange mono" style="font-size:0.8rem;">HINT {{ loop.index }}:</span>
+          <div style="margin-top:0.25rem;color:var(--text2);">{{ hint }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div>
+    <div class="card">
+      <div class="card-header">
+        <h2 class="accent">// Submit Flag</h2>
+      </div>
+      <div class="card-body">
+        {% if solved and solved.correct %}
+          <div style="text-align:center;padding:2rem 0;">
+            <div style="font-size:2.5rem;margin-bottom:0.75rem;">🎉</div>
+            <div class="text-green" style="font-size:1.2rem;font-weight:700;margin-bottom:0.25rem;">Flag Captured!</div>
+            <div class="text-muted mono">+{{ task.points }} points awarded</div>
+          </div>
+        {% else %}
+          <form method="POST">
+            <div class="form-group">
+              <label>Flag</label>
+              <input type="text" name="flag" placeholder="CTF{...}" autocomplete="off" autofocus>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;">Submit Flag</button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// simple hint toggle — already always shown, but good UX
+</script>
+{% endblock %}

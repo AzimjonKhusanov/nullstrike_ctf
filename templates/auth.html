@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NUll.CTF — {{ mode|capitalize }}</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0c10; --bg2: #0f1218; --border: #1e2a3a;
+  --accent: #00d4ff; --accent2: #ff6b35; --green: #00ff88;
+  --red: #ff3860; --text: #c8d6e5; --text2: #7f8c9a;
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-ui: 'Rajdhani', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.auth-wrap {
+  width: 100%;
+  max-width: 400px;
+  padding: 1.5rem;
+}
+.brand {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+.brand h1 {
+  font-family: var(--font-mono);
+  font-size: 2rem;
+  color: var(--accent);
+  letter-spacing: 4px;
+}
+.brand h1 span { color: var(--accent2); }
+.brand p {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--text2);
+  margin-top: 0.5rem;
+}
+.auth-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 2rem;
+}
+.auth-card h2 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--text2);
+  margin-bottom: 1.5rem;
+}
+.form-group { margin-bottom: 1.25rem; }
+.form-group label {
+  display: block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text2);
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+}
+.form-group input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  transition: border-color 0.15s;
+}
+.form-group input:focus { outline: none; border-color: var(--accent); }
+.btn-submit {
+  width: 100%;
+  padding: 0.85rem;
+  background: var(--accent);
+  color: #000;
+  border: none;
+  border-radius: 4px;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.15s;
+}
+.btn-submit:hover { background: #00b8d9; }
+.auth-switch {
+  text-align: center;
+  margin-top: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--text2);
+}
+.auth-switch a { color: var(--accent); text-decoration: none; font-weight: 600; }
+.alert {
+  padding: 0.7rem 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  border-left: 3px solid;
+  font-weight: 600;
+}
+.alert-success { background: rgba(0,255,136,0.08); border-color: var(--green); color: var(--green); }
+.alert-error { background: rgba(255,56,96,0.08); border-color: var(--red); color: var(--red); }
+</style>
+</head>
+<body>
+<div class="auth-wrap">
+  <div class="brand">
+    <h1>CTF<span>.</span>PWN</h1>
+    <p>Capture The Flag Platform</p>
+  </div>
+  <div class="auth-card">
+    <h2>{{ '// Register' if mode == 'register' else '// Login' }}</h2>
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in msgs %}
+        <div class="alert alert-{{ cat }}">{{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+    <form method="POST">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" name="username" required autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" required autocomplete="{{ 'new-password' if mode=='register' else 'current-password' }}">
+      </div>
+      <button type="submit" class="btn-submit">
+        {{ 'Create Account' if mode == 'register' else 'Enter' }}
+      </button>
+    </form>
+    <div class="auth-switch">
+      {% if mode == 'login' %}
+        No account? <a href="{{ url_for('register') }}">Register</a>
+      {% else %}
+        Already have an account? <a href="{{ url_for('login') }}">Login</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+</body>
+</html>
